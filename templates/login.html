@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Full Screen</title>
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/tela_login.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="login-container">
+        
+        <section class="form-card">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo" class="logo">
+            </div>
+
+            <header>
+                <h1>Acessar Conta</h1>
+                <p>Insira suas credenciais abaixo</p>
+            </header>
+
+            <form action="/" method="POST">
+                <div class="input-group">
+                    <label>E-mail</label>
+                    <!-- ADICIONE O name="email" AQUI -->
+                    <input type="email" name="email" placeholder="exemplo@email.com" required>
+                </div>
+            
+                <div class="input-group">
+                    <label>Senha</label>
+                    <!-- ADICIONE O name="senha" AQUI -->
+                    <input type="password" name="senha" placeholder="••••••••" required>
+                </div>
+            
+                <div class="actions">
+                    <label><input type="checkbox"> Lembrar-me</label>
+                    <a href="#">Esqueci a senha</a>
+                </div>
+            
+                <button type="submit" class="btn-primary">Entrar</button>
+            </form>
+
+            <footer>
+                <p>Ainda não tem conta? <a href="/cadastrar">Cadastre-se</a></p>
+            </footer>
+        </section>
+
+    </main>
+</body>
+</html>

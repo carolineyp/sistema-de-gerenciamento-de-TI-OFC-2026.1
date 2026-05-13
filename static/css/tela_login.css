@@ -1,0 +1,112 @@
+/* Reset básico para tirar margens brancas do navegador */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+/* Container principal - A imagem de fundo fica aqui */
+.login-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;     /* Centraliza Verticalmente */
+    justify-content: center;  /* Centraliza Horizontalmente */
+    
+    /* Configuração da Imagem enviada */
+    background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('../imagens/login_container.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* O cartão branco no centro */
+.form-card {
+    background-color:rgba(44, 123, 172, 0.767) ; /* duas cores com transparência para destacar a imagem de fundo */
+    width: 90%;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Estilização interna */
+.logo {
+    max-width: 100px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    color: #1f1e1e;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #1f1e1e;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1f1e1e;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    background: #f9f9f9;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 25px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background-color: #0066ff; /* Azul para combinar com o tema da foto */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0052cc;
+}
+
+footer {
+    margin-top: 25px;
+    font-size: 0.85rem;
+}
+
+footer a {
+    color: #00398f;
+    text-decoration: none;
+    font-weight: 600;
+}

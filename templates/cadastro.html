@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gestão de TI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tela_login.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+
+    <main class="login-container">
+        <section class="form-card">
+            
+            <header>
+                <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo" class="logo">
+                <h1>faça seu cadastro</h1>
+                <p>Acesse o sistema de gerenciamento</p>
+            </header>
+
+            <form action="/cadastrar" method="POST">
+                
+                <div class="input-group">
+                    <label for="email">E-mail Corporativo</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                </div>
+
+                <div class="actions">
+                    <div>
+                        <input type="checkbox" id="remember">
+                        <label for="remember" style="display: inline; font-weight: normal;">Lembrar-me</label>
+                    </div>
+                    <a href="#" style="color: #1f1e1e; text-decoration: none;">Esqueceu a senha?</a>
+                </div>
+
+                <button type="submit" class="btn-primary">Entrar no Sistema</button>
+            </form>
+
+            <footer>
+                <p>tem uma conta? <a href="/">logue aqui</a></p>
+            </footer>
+
+        </section>
+    </main>
+
+</body>
+</html>
