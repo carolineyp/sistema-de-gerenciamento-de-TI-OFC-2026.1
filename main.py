@@ -19,6 +19,17 @@ class Usuario(db.Model):
         self.email = email
         self.senha = senha
 
+class Equipamento(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tipo = db.Column(db.String(50))
+    modelo = db.Column(db.String(100))
+    serie = db.Column(db.String(50))
+
+    def __init__(self, tipo, modelo, serie):
+        self.tipo = tipo
+        self.modelo = modelo
+        self.serie = serie
+
 
 # Garante que o comando seja executado dentro do contexto do seu app Flask
 with app.app_context():
@@ -38,7 +49,7 @@ def login():
         user = Usuario.query.filter_by(email=email_digitado).first()
         
         if user and user.senha == senha_digitada:
-            return "Login realizado com sucesso! Bem-vindo ao sistema."
+            return redirect(url_for('dashboard'))
         else:
             return "Erro: E-mail ou senha não encontrados no banco."
             
@@ -63,6 +74,30 @@ def cadastrar():
         return redirect(url_for('login'))
         
     return render_template("cadastro.html") # Sua tela de cadastro
+
+
+#TELA INICIAL
+
+@app.route("/dashboard")
+def dashboard():
+    # Isso aqui busca TUDO que você cadastrou na tabela Equipamento
+    todos_equipamentos = Equipamento.query.all() 
+    return render_template("dashboard.html", equipamentos=todos_equipamentos)
+
+# ROTA PARA CADASTRAR EQUIPAMENTOS
+@app.route("/cadastrar_equipamento", methods=["GET", "POST"])
+def cadastrar_equipamento():
+    if request.method == "POST":
+       
+        novo_item = Equipamento(
+            tipo=request.form.get("tipo"),
+            modelo=request.form.get("modelo"),
+            serie=request.form.get("serie")
+        )
+        db.session.add(novo_item)
+        db.session.commit()
+        return "Equipamento salvo com sucesso!"
+    return render_template("novo_equipamento.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

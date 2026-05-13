@@ -1,0 +1,7 @@
+<h1>Lista de Equipamentos</h1>
+<ul>
+    {% for item in equipamentos %}
+        <li>{{ item.tipo }} - {{ item.modelo }} (Série: {{ item.serie }})</li>
+    {% endfor %}
+</ul>
+<a href="/cadastrar_equipamento">Cadastrar Novo</a>
