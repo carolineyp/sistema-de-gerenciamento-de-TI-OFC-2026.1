@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__,)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meubanco.db'
+# O XAMPP por padrão vem com o usuário 'root' e sem nenhuma senha (por isso fica vazio depois dos dois pontos)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/controle_ti'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -19,16 +20,22 @@ class Usuario(db.Model):
         self.email = email
         self.senha = senha
 
+
 class Equipamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tipo = db.Column(db.String(50))
     modelo = db.Column(db.String(100))
-    serie = db.Column(db.String(50))
+    # unique=True impede que salve duas séries iguais!
+    serie = db.Column(db.String(50), unique=True) 
+    sala = db.Column(db.String(50))    # Para mudar o equipamento de sala
+    status = db.Column(db.String(50))  # Ex: "Ativo", "Em Manutenção", "Sucata"
 
-    def __init__(self, tipo, modelo, serie):
+    def __init__(self, tipo, modelo, serie, sala="Sala 01", status="Ativo"):
         self.tipo = tipo
         self.modelo = modelo
         self.serie = serie
+        self.sala = sala
+        self.status = status
 
 
 # Garante que o comando seja executado dentro do contexto do seu app Flask
@@ -80,24 +87,51 @@ def cadastrar():
 
 @app.route("/dashboard")
 def dashboard():
-    # Isso aqui busca TUDO que você cadastrou na tabela Equipamento
-    todos_equipamentos = Equipamento.query.all() 
-    return render_template("dashboard.html", equipamentos=todos_equipamentos)
+    # Puxa todos os equipamentos salvos no banco de dados
+    lista_do_banco = Equipamento.query.all()
+    # Envia essa lista para dentro do HTML com o nome de 'equipamentos'
+    return render_template("dashboard.html", equipamentos=lista_do_banco)
 
 # ROTA PARA CADASTRAR EQUIPAMENTOS
+# Mude de @app.route("/cadastrar_equipamento") para isto:
 @app.route("/cadastrar_equipamento", methods=["GET", "POST"])
 def cadastrar_equipamento():
     if request.method == "POST":
-       
-        novo_item = Equipamento(
-            tipo=request.form.get("tipo"),
-            modelo=request.form.get("modelo"),
-            serie=request.form.get("serie")
-        )
+        # ... o resto do seu código que pega os dados e salva no banco ...
+        # Pegando os dados do formulário rosa
+        tipo = request.form.get("tipo") or ""
+        modelo = request.form.get("modelo") or ""
+        status = request.form.get("status") or ""
+        serie = request.form.get("serie") or ""
+        
+        # Criando o objeto
+        novo_item = Equipamento(tipo=tipo, modelo=modelo, status=status, serie=serie)
+        
+        # Salvando no banco
         db.session.add(novo_item)
         db.session.commit()
-        return "Equipamento salvo com sucesso!"
+        
+    # ATENÇÃO: Esse return fica alinhado com o 'if', fora dele!
+    # Se terminar o POST ou se acontecer qualquer outra coisa, ele recarrega o dashboard
+        return redirect(url_for('dashboard'))
     return render_template("novo_equipamento.html")
+
+@app.route("/editar_equipamento/<int:id>", methods=["GET", "POST"])
+def editar_equipamento(id):
+    equipamento = Equipamento.query.get_or_404(id)
+    
+    if request.method == "POST":
+        equipamento.tipo = request.form.get("tipo")
+        equipamento.modelo = request.form.get("modelo")
+        equipamento.serie = request.form.get("serie")
+        # ESSA LINHA AQUI EMBAIXO É A CHAVE:
+        equipamento.sala = request.form.get("sala") or "Sala 01"  
+        equipamento.status = request.form.get("status") or "Ativo"
+        
+        db.session.commit()
+        return redirect(url_for('dashboard'))
+        
+    return render_template("editar_equipamento.html", equipamento=equipamento)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Equipamento - Controle de TI</title>
+    <title>Editar Equipamento - Controle de TI</title>
     
     <style>
         /* ==========================================================================
@@ -17,7 +17,7 @@
         }
 
         body {
-            background-color: #f4f6f9; /* Fundo cinza claro idêntico ao dashboard */
+            background-color: #f4f6f9; /* Mesmo fundo padrão */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -25,7 +25,6 @@
             padding: 20px;
         }
 
-        /* Card do Formulário */
         .form-container {
             background-color: white;
             width: 100%;
@@ -36,7 +35,7 @@
         }
 
         .form-container h2 {
-            color: #1a237e; /* Azul escuro da sua marca */
+            color: #1a237e; /* Azul escuro do Dashboard */
             margin-bottom: 10px;
             font-size: 24px;
             text-align: center;
@@ -49,7 +48,6 @@
             margin-bottom: 30px;
         }
 
-        /* Grupos de Input */
         .form-group {
             margin-bottom: 20px;
         }
@@ -73,13 +71,12 @@
             background-color: #fff;
         }
 
-        /* Efeito de clique nos campos */
         .form-group input:focus, .form-group select:focus {
             border-color: #1a237e;
             box-shadow: 0 0 5px rgba(26, 35, 126, 0.2);
         }
 
-        /* Botões */
+        /* Botão Salvar (Azul) */
         .btn-submit {
             width: 100%;
             background-color: #1a237e;
@@ -109,10 +106,9 @@
         }
 
         .btn-cancel:hover {
-            color: #ff3d00; /* Vermelho ao passar o mouse para cancelar */
+            color: #ff3d00;
         }
 
-        /* Ajuste para telas pequenas (Celular) */
         @media (max-width: 480px) {
             .form-container {
                 padding: 25px;
@@ -123,48 +119,47 @@
 <body>
 
     <div class="form-container">
-        <h2>Novo Equipamento</h2>
-        <p>Insira os dados do ativo de TI para registrar no inventário.</p>
+        <h2>Alterar Equipamento</h2>
+        <p>Modifique a localização ou o status do dispositivo selecionado.</p>
 
-        <form action="/cadastrar_equipamento" method="POST">
+        <form action="/editar_equipamento/{{ equipamento.id }}" method="POST">
             
             <div class="form-group">
                 <label for="tipo">Tipo do Dispositivo</label>
-                <input type="text" id="tipo" name="tipo" placeholder="Ex: Notebook, Monitor, Roteador" required>
+                <input type="text" id="tipo" name="tipo" value="{{ equipamento.tipo }}" required>
             </div>
 
             <div class="form-group">
                 <label for="modelo">Marca / Modelo</label>
-                <input type="text" id="modelo" name="modelo" placeholder="Ex: Dell Inspiron 15, LG UltraWide" required>
+                <input type="text" id="modelo" name="modelo" value="{{ equipamento.modelo }}" required>
             </div>
 
             <div class="form-group">
                 <label for="serie">Número de Série</label>
-                <input type="text" id="serie" name="serie" placeholder="Ex: BRX1234567" required>
+                <input type="text" id="serie" name="serie" value="{{ equipamento.serie }}" required>
             </div>
 
             <div class="form-group">
                 <label for="sala">Localização / Sala</label>
                 <select id="sala" name="sala">
-                    <option value="Sala 01">Sala 01</option>
-                    <option value="Sala 02">Sala 02</option>
-                    <option value="Coordenação">Coordenação</option>
-                    <option value="Almoxarifado">Almoxarifado</option>
+                    <option value="Sala 01" {% if equipamento.sala == 'Sala 01' %}selected{% endif %}>Sala 01</option>
+                    <option value="Sala 02" {% if equipamento.sala == 'Sala 02' %}selected{% endif %}>Sala 02</option>
+                    <option value="Coordenação" {% if equipamento.sala == 'Coordenação' %}selected{% endif %}>Coordenação</option>
+                    <option value="Almoxarifado" {% if equipamento.sala == 'Almoxarifado' %}selected{% endif %}>Almoxarifado</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="status">Status Inicial</label>
+                <label for="status">Status Atual</label>
                 <select id="status" name="status">
-                    <option value="Ativo">Ativo / Em uso</option>
-                    <option value="Em Manutenção">Em Manutenção</option>
-                    <option value="Sucata">Sucata / Defeito</option>
+                    <option value="Ativo" {% if equipamento.status == 'Ativo' %}selected{% endif %}>Ativo / Em uso</option>
+                    <option value="Em Manutenção" {% if equipamento.status == 'Em Manutenção' %}selected{% endif %}>Em Manutenção</option>
+                    <option value="Sucata" {% if equipamento.status == 'Sucata' %}selected{% endif %}>Sucata / Defeito</option>
                 </select>
             </div>
 
-            <button type="submit" class="btn-submit">Salvar Equipamento</button>
-            
-            <a href="/dashboard" class="btn-cancel">Cancelar e Voltar</a>
+            <button type="submit" class="btn-submit">Salvar Alterações</button>
+            <a href="/dashboard" class="btn-cancel">Cancelar</a>
         </form>
     </div>
 

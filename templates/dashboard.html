@@ -1,7 +1,206 @@
-<h1>Lista de Equipamentos</h1>
-<ul>
-    {% for item in equipamentos %}
-        <li>{{ item.tipo }} - {{ item.modelo }} (Série: {{ item.serie }})</li>
-    {% endfor %}
-</ul>
-<a href="/cadastrar_equipamento">Cadastrar Novo</a>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Controle de TI</title>
+    
+    <style>
+        /* ==========================================================================
+           AQUI COMEÇA O CSS (ESTILO E RESPONSIVIDADE)
+           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        /* Container Principal (Layout Flexbox) */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Menu Lateral */
+        .sidebar {
+            width: 250px;
+            background-color: #1a237e; /* Azul escuro profissional */
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c5cae9;
+            text-decoration: none;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #283593;
+            color: white;
+        }
+
+        /* Área do Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Botão de Cadastrar Novo */
+        .btn-primary {
+            background-color: #00e676; /* Verde em destaque */
+            color: #121212;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #00c853;
+        }
+
+        /* Tabela Responsiva */
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow-x: auto; /* Permite scroll horizontal no celular se a tabela for grande */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            color: #555;
+        }
+
+        /* Badges de Status (Etiquetas coloridas automáticas) */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        /* Cores baseadas no status que vem do banco */
+        .badge.ativo { background-color: #d4edda; color: #155724; }
+        .badge.manutencao { background-color: #fff3cd; color: #856404; }
+        .badge.sucata { background-color: #f8d7da; color: #721c24; }
+
+        /* Botão de editar */
+        .btn-edit {
+            color: #1a237e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* RESPONSIVIDADE (Ajuste automático para celular) */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column; /* Joga o menu para cima e o conteúdo para baixo */
+            }
+
+            .sidebar {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <h2>Inventário TI</h2>
+            <a href="/dashboard" class="active">Equipamentos</a>
+            <a href="#">Suporte</a>
+            <a href="/" style="margin-top: 50px; color: #ff8a80;">Sair</a>
+        </aside>
+
+        <main class="main-content">
+            <div class="header-content">
+                <h1>Painel de Equipamentos</h1>
+                <a href="/cadastrar_equipamento" class="btn-primary">+ Novo Equipamento</a>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Modelo</th>
+                            <th>Nº de Série</th>
+                            <th>Local</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in equipamentos %}
+                        <tr>
+                            <td>{{ item.tipo }}</td>
+                            <td>{{ item.modelo }}</td>
+                            <td>{{ item.serie }}</td>
+                            <td>{{ item.sala or 'Não definida' }}</td>
+                            <td>
+                                <span class="badge {{ (item.status or 'ativo') | lower | replace(' ', '') | replace('ç', 'c') | replace('ã', 'a') }}">
+                                    {{ item.status or 'Ativo' }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="/editar_equipamento/{{ item.id }}" class="btn-edit">Editar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+    </div>
+
+</body>
+</html>
