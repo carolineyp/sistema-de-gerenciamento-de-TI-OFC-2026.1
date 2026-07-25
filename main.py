@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__,)
 
-# O XAMPP por padrão vem com o usuário 'root' e sem nenhuma senha (por isso fica vazio depois dos dois pontos)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/controle_ti'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -25,10 +24,9 @@ class Equipamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tipo = db.Column(db.String(50))
     modelo = db.Column(db.String(100))
-    # unique=True impede que salve duas séries iguais!
     serie = db.Column(db.String(50), unique=True) 
-    sala = db.Column(db.String(50))    # Para mudar o equipamento de sala
-    status = db.Column(db.String(50))  # Ex: "Ativo", "Em Manutenção", "Sucata"
+    sala = db.Column(db.String(50))   
+    status = db.Column(db.String(50))  
 
     def __init__(self, tipo, modelo, serie, sala="Sala 01", status="Ativo"):
         self.tipo = tipo
@@ -36,6 +34,18 @@ class Equipamento(db.Model):
         self.serie = serie
         self.sala = sala
         self.status = status
+
+class Suporte(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+    descricao = db.Column(db.Text)
+    data_solicitacao = db.Column(db.DateTime)
+
+    # Construtor corrigido:
+    def __init__(self, usuario_id, descricao, data_solicitacao):
+        self.usuario_id = usuario_id  # Ajustado aqui!
+        self.descricao = descricao
+        self.data_solicitacao = data_solicitacao
 
 
 # Garante que o comando seja executado dentro do contexto do seu app Flask
@@ -132,6 +142,28 @@ def editar_equipamento(id):
         return redirect(url_for('dashboard'))
         
     return render_template("editar_equipamento.html", equipamento=equipamento)
+
+
+
+@app.route('/dar_suporte', methods=['POST'])
+def receber_dados_suporte():
+    # 1. Captura usando o nome exato do seu HTML (mensagem com um 's')
+    mensagem_recebida = request.form.get('mensagem') 
+    
+    # 2. Cria o objeto usando a função de data do SQL
+    novo_chamado = Suporte(usuario_id=2, descricao=mensagem_recebida, data_solicitacao=db.func.now())
+    
+    # 3. Salva no banco de dados
+    db.session.add(novo_chamado)  
+    db.session.commit()           
+    
+    # 4. Redireciona para a dashboard
+    return redirect(url_for('dashboard'))
+
+@app.route('/suporte')
+def exibir_suporte():
+    return render_template('suporte.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
